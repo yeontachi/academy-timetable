@@ -10,12 +10,12 @@
 
         function toggleSelection(cell, day, hour) {
             let key = `${day}-${hour}`;
-            if (selected.has(key)) {
-                selected.delete(key);
-                cell.classList.remove('selected');
-            } else {
+            if (!selected.has(key)) {
                 selected.add(key);
                 cell.classList.add('selected');
+            } else {
+                selected.delete(key);
+                cell.classList.remove('selected');
             }
             document.getElementById('selected').value = Array.from(selected)
                 .filter(item => item.includes('-'))
@@ -42,18 +42,22 @@
             isDragging = false;
         }
 
-        function handleTouchMove(e) {
-            const touch = e.touches[0];
+        function handleTouchTap(e) {
+            const touch = e.changedTouches[0];
             const elem = document.elementFromPoint(touch.clientX, touch.clientY);
             if (elem && elem.dataset.day && elem.dataset.hour) {
-                toggleSelection(elem, elem.dataset.day, elem.dataset.hour);
+                let key = `${elem.dataset.day}-${elem.dataset.hour}`;
+                // 모바일은 선택만 허용 (취소 없음)
+                if (!selected.has(key)) {
+                    selected.add(key);
+                    elem.classList.add('selected');
+                    document.getElementById('selected').value = Array.from(selected).join(',');
+                }
             }
         }
 
         window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('touchend', () => { isDragging = false; });
-        window.addEventListener('touchstart', () => { isDragging = true; });
-        window.addEventListener('touchmove', handleTouchMove);
+        window.addEventListener('touchend', handleTouchTap);
     </script>
 </head>
 <body>
@@ -73,21 +77,19 @@
             <!-- 시간표 테이블 -->
             <table class="timetable">
                 <tr>
-                    
                     {% for d in ['월','화','수','목','금','토','일'] %}
                     <th>{{ d }}</th>
                     {% endfor %}
                 </tr>
                 {% for h in range(10, 23) %}
                 <tr>
-                    <!-- 시간 셀은 제거, 빈칸만 유지 -->
                     {% for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
                     <td 
                         data-day="{{ d }}" 
                         data-hour="{{ h }}" 
                         onmousedown="handleMouseDown(event)" 
                         onmouseenter="handleMouseEnter(event)" 
-                        ontouchstart="handleMouseDown(event)">
+                        ontouchend="handleTouchTap(event)">
                     </td>
                     {% endfor %}
                 </tr>
