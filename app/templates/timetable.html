@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전체 시간표</title>
+    <style>
+        table, th, td {
+            border: 1px solid #888;
+            border-collapse: collapse;
+        }
+        th, td {
+            width: 100px;
+            height: 60px;
+            text-align: center;
+            vertical-align: top;
+        }
+        td {
+            font-size: 12px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>전체 시간표 보기</h2>
+
+    <table>
+        <tr>
+            <th>시간</th>
+            {% for d in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+                <th>{{ d }}</th>
+            {% endfor %}
+        </tr>
+        {% for hour in range(10, 23) %}
+        <tr>
+            <td>{{ hour }}:00</td>
+            {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+            <td>
+                {% set names = table_data.get((day, hour), []) %}
+                {% for name in names %}
+                    {{ name }}<br>
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('index') }}">← 메인화면으로</a>
+</body>
+</html>

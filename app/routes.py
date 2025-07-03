@@ -30,7 +30,7 @@ def index():
 @app.route('/select-time/<name>', methods=['GET', 'POST'])
 def select_time(name):
     if request.method == 'POST':
-        selected_str = request.form['time']  # ex: "Mon-10,Tue-12,Wed-15"
+        selected_str = request.form['time']
         selected = [item for item in selected_str.split(',') if '-' in item]
 
         conn = sqlite3.connect(DB_PATH)
@@ -42,18 +42,26 @@ def select_time(name):
                           (name, day, int(hour)))
             except Exception as e:
                 print("Error with:", item, e)
-                continue
         conn.commit()
         conn.close()
-        return redirect(url_for('index'))
-    return render_template('select_time.html', name=name)
+        return redirect(url_for('timetable'))
 
+    return render_template('select_time.html', name=name)
 
 @app.route('/timetable')
 def timetable():
+    # 데이터를 딕셔너리로 구조화: {(day, hour): [name1, name2, ...]}
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT name, day, hour FROM availability")
-    data = c.fetchall()
+    raw_data = c.fetchall()
     conn.close()
-    return render_template('timetable.html', data=data)
+
+    table_data = {}  # (day, hour) → [names]
+    for name, day, hour in raw_data:
+        key = (day, int(hour))
+        if key not in table_data:
+            table_data[key] = []
+        table_data[key].append(name)
+
+    return render_template('timetable.html', table_data=table_data)

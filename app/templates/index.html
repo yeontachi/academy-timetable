@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
+    <meta charset="UTF-8">
     <title>이름 입력</title>
 </head>
 <body>
@@ -9,5 +10,10 @@
         <input type="text" name="name" required>
         <button type="submit">확인</button>
     </form>
+
+    <br><br>
+    <a href="{{ url_for('timetable') }}">
+        <button>전체 시간표 보기</button>
+    </a>
 </body>
 </html>
