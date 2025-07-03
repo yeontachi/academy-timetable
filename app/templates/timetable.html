@@ -13,20 +13,21 @@
             height: 60px;
             text-align: center;
             vertical-align: top;
-        }
-        td {
             font-size: 12px;
-            padding: 5px;
         }
     </style>
 </head>
 <body>
     <h2>전체 시간표 보기</h2>
+
     <form method="post" action="{{ url_for('reset_timetable') }}" onsubmit="return confirm('정말 초기화하시겠습니까?')">
         <button type="submit" style="background-color:red; color:white; padding:6px 12px; border:none; border-radius:4px;">
             전체 시간표 초기화
         </button>
     </form>
+
+    <br>
+
     <table>
         <tr>
             <th>시간</th>
@@ -38,12 +39,12 @@
         <tr>
             <td>{{ hour }}:00</td>
             {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
-            <td>
                 {% set names = table_data.get((day, hour), []) %}
-                {% for name in names %}
-                    {{ name }}<br>
-                {% endfor %}
-            </td>
+                <td style="background-color: {{ 'lightgreen' if names else 'white' }}">
+                    {% for name in names %}
+                        {{ name }}<br>
+                    {% endfor %}
+                </td>
             {% endfor %}
         </tr>
         {% endfor %}
