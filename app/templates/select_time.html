@@ -43,7 +43,7 @@
         }
 
         function handleTouchEnd(e) {
-            e.preventDefault();
+           // e.preventDefault();
             const cell = e.target;
             if (cell && cell.dataset.day && cell.dataset.hour) {
                 let key = `${cell.dataset.day}-${cell.dataset.hour}`;
