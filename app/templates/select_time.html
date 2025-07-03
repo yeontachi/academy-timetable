@@ -10,12 +10,12 @@
 
         function toggleSelection(cell, day, hour) {
             let key = `${day}-${hour}`;
-            if (!selected.has(key)) {
-                selected.add(key);
-                cell.classList.add('selected');
-            } else {
+            if (selected.has(key)) {
                 selected.delete(key);
                 cell.classList.remove('selected');
+            } else {
+                selected.add(key);
+                cell.classList.add('selected');
             }
             document.getElementById('selected').value = Array.from(selected)
                 .filter(item => item.includes('-'))
@@ -42,22 +42,26 @@
             isDragging = false;
         }
 
-        function handleTouchTap(e) {
+        function handleTouchEnd(e) {
+            e.preventDefault();  // 모바일 스크롤 방지
             const touch = e.changedTouches[0];
             const elem = document.elementFromPoint(touch.clientX, touch.clientY);
             if (elem && elem.dataset.day && elem.dataset.hour) {
                 let key = `${elem.dataset.day}-${elem.dataset.hour}`;
-                // 모바일은 선택만 허용 (취소 없음)
-                if (!selected.has(key)) {
+                // 셀이 이미 선택된 경우에만 해제
+                if (elem.classList.contains('selected')) {
+                    selected.delete(key);
+                    elem.classList.remove('selected');
+                } else {
                     selected.add(key);
                     elem.classList.add('selected');
-                    document.getElementById('selected').value = Array.from(selected).join(',');
                 }
+                document.getElementById('selected').value = Array.from(selected).join(',');
             }
         }
 
         window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('touchend', handleTouchTap);
+        window.addEventListener('touchend', handleTouchEnd, { passive: false });
     </script>
 </head>
 <body>
@@ -89,7 +93,7 @@
                         data-hour="{{ h }}" 
                         onmousedown="handleMouseDown(event)" 
                         onmouseenter="handleMouseEnter(event)" 
-                        ontouchend="handleTouchTap(event)">
+                        ontouchstart="handleMouseDown(event)">
                     </td>
                     {% endfor %}
                 </tr>
