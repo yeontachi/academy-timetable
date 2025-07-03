@@ -1,0 +1,58 @@
+/* 테이블 전체 기본 스타일 */
+table, td, th {
+    border: 1px solid #aaa;
+    border-collapse: collapse;
+}
+
+th, td {
+    width: 80px;
+    height: 40px;
+    text-align: center;
+    vertical-align: top;
+    padding: 0;
+}
+
+/* 선택된 셀 스타일 */
+.selected {
+    background-color: lightgreen;
+    transition: background-color 0.2s ease;
+}
+
+/* 시간표 왼쪽 시간 텍스트를 위한 컨테이너 */
+.time-container {
+    position: relative;
+    margin-left: 70px;  /* 시간 라벨 공간 확보 */
+}
+
+/* 왼쪽 시간 텍스트 영역 */
+.time-labels {
+    position: absolute;
+    left: -70px;
+    top: 25px;  /* 요일 행 제외 */
+    width: 45px;
+    font-size: 15px;
+}
+
+.time-labels .time-label {
+    height: 40px;
+    line-height: 40px;
+    text-align: right;
+    padding-right: 0px;
+    color: #333;
+}
+
+/* 버튼 스타일 */
+button {
+    margin-top: 15px;
+    padding: 8px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

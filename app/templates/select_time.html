@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>시간 선택</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        let selected = new Set();
+        let isDragging = false;
+
+        function toggleSelection(cell, day, hour) {
+            let key = `${day}-${hour}`;
+            if (selected.has(key)) {
+                selected.delete(key);
+                cell.classList.remove('selected');
+            } else {
+                selected.add(key);
+                cell.classList.add('selected');
+            }
+            document.getElementById('selected').value = Array.from(selected)
+                .filter(item => item.includes('-'))
+                .join(',');
+        }
+
+        function handleMouseDown(e) {
+            isDragging = true;
+            const cell = e.target;
+            if (cell.dataset.day && cell.dataset.hour) {
+                toggleSelection(cell, cell.dataset.day, cell.dataset.hour);
+            }
+        }
+
+        function handleMouseEnter(e) {
+            if (!isDragging) return;
+            const cell = e.target;
+            if (cell.dataset.day && cell.dataset.hour) {
+                toggleSelection(cell, cell.dataset.day, cell.dataset.hour);
+            }
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+        }
+
+        function handleTouchMove(e) {
+            const touch = e.touches[0];
+            const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (elem && elem.dataset.day && elem.dataset.hour) {
+                toggleSelection(elem, elem.dataset.day, elem.dataset.hour);
+            }
+        }
+
+        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('touchend', () => { isDragging = false; });
+        window.addEventListener('touchstart', () => { isDragging = true; });
+        window.addEventListener('touchmove', handleTouchMove);
+    </script>
+</head>
+<body>
+    <h2>{{ name }} 선생님, 가능한 시간을 선택하세요</h2>
+
+    <form method="post">
+        <input type="hidden" id="selected" name="time">
+
+        <div class="time-container">
+            <!-- 왼쪽 시간 텍스트 -->
+            <div class="time-labels">
+                {% for h in range(10, 23) %}
+                    <div class="time-label">{{ h }}:00</div>
+                {% endfor %}
+            </div>
+
+            <!-- 시간표 테이블 -->
+            <table class="timetable">
+                <tr>
+                    
+                    {% for d in ['월','화','수','목','금','토','일'] %}
+                    <th>{{ d }}</th>
+                    {% endfor %}
+                </tr>
+                {% for h in range(10, 23) %}
+                <tr>
+                    <!-- 시간 셀은 제거, 빈칸만 유지 -->
+                    {% for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
+                    <td 
+                        data-day="{{ d }}" 
+                        data-hour="{{ h }}" 
+                        onmousedown="handleMouseDown(event)" 
+                        onmouseenter="handleMouseEnter(event)" 
+                        ontouchstart="handleMouseDown(event)">
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <button type="submit">저장</button>
+    </form>
+</body>
+</html>
