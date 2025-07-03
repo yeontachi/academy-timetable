@@ -46,12 +46,16 @@
             e.preventDefault();
             const touch = e.changedTouches[0];
             let elem = document.elementFromPoint(touch.clientX, touch.clientY);
-            
-            // 셀이 아닌 텍스트 노드나 다른 요소일 경우 <td>를 찾아감
-            const cell = elem?.closest('td');
 
-            if (cell && cell.dataset.day && cell.dataset.hour) {
-                let key = `${cell.dataset.day}-${cell.dataset.hour}`;
+            // 터치 위치에서 가장 가까운 td 셀 탐색
+            const cell = elem?.closest('td');
+            if (!cell) return;
+
+            const day = cell.dataset.day;
+            const hour = cell.dataset.hour;
+
+            if (day && hour) {
+                const key = `${day}-${hour}`;
                 if (cell.classList.contains('selected')) {
                     selected.delete(key);
                     cell.classList.remove('selected');
@@ -59,10 +63,14 @@
                     selected.add(key);
                     cell.classList.add('selected');
                 }
-                document.getElementById('selected').value = Array.from(selected).join(',');
+
+                // ✅ input hidden 업데이트 (명확히 반영)
+                const hiddenInput = document.getElementById('selected');
+                if (hiddenInput) {
+                    hiddenInput.value = Array.from(selected).join(',');
+                }
             }
         }
-
 
         window.addEventListener('mouseup', handleMouseUp);
         window.addEventListener('touchend', handleTouchEnd, { passive: false });
