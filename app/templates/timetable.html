@@ -22,7 +22,11 @@
 </head>
 <body>
     <h2>전체 시간표 보기</h2>
-
+    <form method="post" action="{{ url_for('reset_timetable') }}" onsubmit="return confirm('정말 초기화하시겠습니까?')">
+        <button type="submit" style="background-color:red; color:white; padding:6px 12px; border:none; border-radius:4px;">
+            전체 시간표 초기화
+        </button>
+    </form>
     <table>
         <tr>
             <th>시간</th>

@@ -44,7 +44,7 @@ def select_time(name):
                 print("Error with:", item, e)
         conn.commit()
         conn.close()
-        return redirect(url_for('timetable'))
+        return redirect(url_for('index'))
 
     return render_template('select_time.html', name=name)
 
@@ -65,3 +65,13 @@ def timetable():
         table_data[key].append(name)
 
     return render_template('timetable.html', table_data=table_data)
+
+@app.route('/reset', methods=['POST'])
+def reset_timetable():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("DELETE FROM availability")
+    conn.commit()
+    conn.close()
+    return redirect(url_for('timetable'))
+
