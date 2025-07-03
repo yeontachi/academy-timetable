@@ -43,18 +43,16 @@
         }
 
         function handleTouchEnd(e) {
-            e.preventDefault();  // 모바일 스크롤 방지
-            const touch = e.changedTouches[0];
-            const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-            if (elem && elem.dataset.day && elem.dataset.hour) {
-                let key = `${elem.dataset.day}-${elem.dataset.hour}`;
-                // 셀이 이미 선택된 경우에만 해제
-                if (elem.classList.contains('selected')) {
+            e.preventDefault();
+            const cell = e.target;
+            if (cell && cell.dataset.day && cell.dataset.hour) {
+                let key = `${cell.dataset.day}-${cell.dataset.hour}`;
+                if (cell.classList.contains('selected')) {
                     selected.delete(key);
-                    elem.classList.remove('selected');
+                    cell.classList.remove('selected');
                 } else {
                     selected.add(key);
-                    elem.classList.add('selected');
+                    cell.classList.add('selected');
                 }
                 document.getElementById('selected').value = Array.from(selected).join(',');
             }
