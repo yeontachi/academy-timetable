@@ -85,7 +85,8 @@
                         data-hour="{{ h }}" 
                         onmousedown="handleMouseDown(event)" 
                         onmouseenter="handleMouseEnter(event)" 
-                        ontouchstart="handleMouseDown(event)">
+                        ontouchstart="handleMouseDown(event)"
+                        ontouchend="handleTouchEnd(event)">
                     </td>
                     {% endfor %}
                 </tr>
