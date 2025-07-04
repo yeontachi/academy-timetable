@@ -43,14 +43,14 @@
             isDragging = false;
         }
 
-        function handleTouchStart(e) {
+        //function handleTouchStart(e) {
             const touch = e.touches[0];
             const elem = document.elementFromPoint(touch.clientX, touch.clientY);
             const cell = elem?.closest('td');
             if (cell) {
                 cell.classList.add('preview');
             }
-        }
+       // }
 
         function handleTouchEnd(e) {
             const touch = e.changedTouches[0];
@@ -76,8 +76,8 @@
         }
 
         window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('touchend', () => { isDragging = false; });
-        window.addEventListener('touchstart', () => { isDragging = true; });
+       // window.addEventListener('touchend', () => { isDragging = false; });
+        //window.addEventListener('touchstart', () => { isDragging = true; });
         //window.addEventListener('touchmove', handleTouchMove);
     </script>
 </head>
@@ -109,8 +109,7 @@
                         data-day="{{ d }}" 
                         data-hour="{{ h }}" 
                         onmousedown="handleMouseDown(event)" 
-                        onmouseenter="handleMouseEnter(event)" 
-                        ontouchstart="handleTouchStart(event)"
+                        onmouseenter="handleMouseEnter(event)"
                         ontouchend="handleTouchEnd(event)">
                     </td>
                     {% endfor %}
