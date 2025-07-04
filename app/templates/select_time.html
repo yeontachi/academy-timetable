@@ -42,33 +42,18 @@
             isDragging = false;
         }
 
-        function handleTouchEnd(e) {
-            const touch = e.changedTouches[0];
+        function handleTouchMove(e) {
+            const touch = e.touches[0];
             const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-            const cell = elem?.closest('td');
-
-            // 셀을 클릭한 경우에만 preventDefault 실행
-            if (cell && cell.dataset.day && cell.dataset.hour) {
-                e.preventDefault();  // ⬅️ 여기 위치 바꿈!
-                const day = cell.dataset.day;
-                const hour = cell.dataset.hour;
-                const key = `${day}-${hour}`;
-
-                if (cell.classList.contains('selected')) {
-                    selected.delete(key);
-                    cell.classList.remove('selected');
-                } else {
-                    selected.add(key);
-                    cell.classList.add('selected');
-                }
-
-                document.getElementById('selected').value = Array.from(selected).join(',');
+            if (elem && elem.dataset.day && elem.dataset.hour) {
+                toggleSelection(elem, elem.dataset.day, elem.dataset.hour);
             }
         }
 
-
         window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('touchend', handleTouchEnd, { passive: false });
+        window.addEventListener('touchend', () => { isDragging = false; });
+        window.addEventListener('touchstart', () => { isDragging = true; });
+        window.addEventListener('touchmove', handleTouchMove);
     </script>
 </head>
 <body>
