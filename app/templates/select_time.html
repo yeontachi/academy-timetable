@@ -42,18 +42,42 @@
             isDragging = false;
         }
 
-        function handleTouchMove(e) {
+        function handleTouchStart(e) {
             const touch = e.touches[0];
             const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-            if (elem && elem.dataset.day && elem.dataset.hour) {
-                toggleSelection(elem, elem.dataset.day, elem.dataset.hour);
+            const cell = elem?.closest('td');
+            if (cell) {
+                cell.classList.add('preview');
             }
+        }
+
+        function handleTouchEnd(e) {
+            const touch = e.changedTouches[0];
+            const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+            const cell = elem?.closest('td');
+            if (!cell || !cell.dataset.day || !cell.dataset.hour) return;
+
+            const key = `${cell.dataset.day}-${cell.dataset.hour}`;
+
+            // 선택 또는 취소 처리
+            if (selected.has(key)) {
+                selected.delete(key);
+                cell.classList.remove('selected');
+            } else {
+                selected.add(key);
+                cell.classList.add('selected');
+            }
+
+            // 임시 스타일 제거
+            cell.classList.remove('preview');
+
+            document.getElementById('selected').value = Array.from(selected).join(',');
         }
 
         window.addEventListener('mouseup', handleMouseUp);
         window.addEventListener('touchend', () => { isDragging = false; });
         window.addEventListener('touchstart', () => { isDragging = true; });
-        window.addEventListener('touchmove', handleTouchMove);
+        //window.addEventListener('touchmove', handleTouchMove);
     </script>
 </head>
 <body>
@@ -85,7 +109,7 @@
                         data-hour="{{ h }}" 
                         onmousedown="handleMouseDown(event)" 
                         onmouseenter="handleMouseEnter(event)" 
-                        ontouchstart="handleMouseDown(event)"
+                        ontouchstart="handleTouchStart(event)"
                         ontouchend="handleTouchEnd(event)">
                     </td>
                     {% endfor %}
